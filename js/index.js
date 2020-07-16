@@ -1,15 +1,21 @@
 (function($) {
   $(function() {
     var $shareLink = $('#sharelink'),
+	  $apiKey = $('#apikey'),
       $downloadLink = $('#downloadlink'),
       $copyButton = $('#copylinkbtn'),
       clipboard;
-
-    $shareLink.on('keyup paste', function() {
-      var link = $shareLink.val(),
-        l = link.replace(/\/file\/d\/(.+)\/(.+)/, "/uc?export=download&id=$1");
-      if(l !== link) {
-        $downloadLink.val(l);
+	
+	$('#sharelink, #apikey').on('input', function() {
+		var link = $shareLink.val();
+		var apiKey = $apiKey.val();
+		var fileId = link.replace(/(.)+([a-zA-Z0-9\-\_]{33})+(.+)/, "$2");
+		var beginURL = 'https://api.googleapps.com/drive/v3/files/';
+		var midStr = '/?key=';
+		var endURL = '&alt=media';
+		f = beginURL.concat(fileId, midStr, apiKey, endURL);
+      if(f.length == 130) {
+        $downloadLink.val(f);
         $copyButton.removeAttr('disabled');
       } else {
         $downloadLink.val('');
